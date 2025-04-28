@@ -1,9 +1,9 @@
 import api from "./api";
 
-export const login = (emailCpf, senha) => {
+export const login = (emailCpf, password) => {
     return api.post("/auth/login", {
         cpf_or_email: emailCpf,
-        password: senha,
+        password: password,
     });
 };
 export const validateToken = (token) => {
