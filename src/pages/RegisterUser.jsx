@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { FloatingLabel, Form, Modal, Button as BsButton } from 'react-bootstrap';
 import { registerUser } from "../services/auth";
+import backgroundImg from "/fundo.png";
 
 export default function RegisterUser() {
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", cpf: "", password: "" });
@@ -11,7 +12,6 @@ export default function RegisterUser() {
     const [loading, setLoading] = useState(false);
     const [mostrarSenha, setMostrarSenha] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [imageIndex, setImageIndex] = useState(0);
     const navigate = useNavigate();
     const isFormIncomplete = Object.entries(formData)
         .filter(([key]) => key !== "phone" && key !== "email")
@@ -115,9 +115,7 @@ export default function RegisterUser() {
     return (
         <Styled.RegisterPage>
             <Styled.Container>
-                <Styled.LeftPanel>
-
-                </Styled.LeftPanel>
+                <Styled.LeftPanel/>
                 <Styled.RightPanel>
                     <Styled.Title>Registre-se!</Styled.Title>
                     <form className="w-100" style={{ maxWidth: "320px" }} onSubmit={handleSubmit}>
@@ -247,9 +245,13 @@ const Styled = {
         position: relative;
         height: 100%;
         overflow: hidden;
+        background-image: url(${backgroundImg});
+        background-size: 50%;
+        background-repeat: no-repeat;
+        background-position: center;
 
         @media (max-width: 767px) {
-            display: none;
+        display: none;
         }
     `,
 

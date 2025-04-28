@@ -18,12 +18,11 @@ const titles = {
 };
 
 const CustomModal = ({ show, onHide, type = "info", message, onConfirm }) => {
-  // Função que executa a ação passada como 'onConfirm' se existir
   const handleConfirm = () => {
     if (onConfirm) {
-      onConfirm(); // Chama a função de callback se ela for passada
+      onConfirm();
     }
-    onHide(); // Fecha o modal após a ação
+    onHide();
   };
 
   return (
