@@ -1,66 +1,17 @@
 import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { registerUser } from "../services/auth";
 import styled from "styled-components";
-import { FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { FloatingLabel, Form, Modal, Button as BsButton } from 'react-bootstrap';
-import { registerUser } from "../services/auth";
+import { CustomModal, PhoneInput, CpfInput, PasswordInput, CustomInput, CustomButton, CustomLink } from "../components";
 import backgroundImg from "/fundo.png";
 
 export default function RegisterUser() {
     const [formData, setFormData] = useState({ name: "", email: "", phone: "", cpf: "", password: "" });
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
-    const [mostrarSenha, setMostrarSenha] = useState(false);
-    const [showModal, setShowModal] = useState(false);
-    const navigate = useNavigate();
-    const isFormIncomplete = Object.entries(formData)
-        .filter(([key]) => key !== "phone" && key !== "email")
-        .some(([, value]) => !value.trim());
-
-    const cleanCpf = (cpf) => cpf.replace(/\D/g, '');
-    const cleanPhone = (phone) => phone.replace(/\D/g, '');
-
-    const formatPhone = (value) => {
-        const cleaned = value.replace(/\D/g, '').slice(0, 11);
-        const match = cleaned.match(/^(\d{0,2})(\d{0,1})(\d{0,4})(\d{0,4})$/);
-        if (!match) return cleaned;
-
-        const [, ddd, first, middle, last] = match;
-        let formatted = '';
-        if (ddd) formatted += `(${ddd}`;
-        if (ddd && ddd.length === 2) formatted += ') ';
-        if (first) formatted += first;
-        if (middle) formatted += ' ' + middle;
-        if (last) formatted += '-' + last;
-
-        return formatted.trim();
-    };
-
-    const handlePhoneChange = (e) => {
-        const formatted = formatPhone(e.target.value);
-        setFormData({ ...formData, phone: formatted });
-    };
-
-    const formatCpf = (value) => {
-        const cleaned = value.replace(/\D/g, '').slice(0, 11);
-        const match = cleaned.match(/^(\d{0,3})(\d{0,3})(\d{0,3})(\d{0,2})$/);
-
-        if (!match) return cleaned;
-        const [, part1, part2, part3, part4] = match;
-
-        let formatted = '';
-        if (part1) formatted += part1;
-        if (part2) formatted += '.' + part2;
-        if (part3) formatted += '.' + part3;
-        if (part4) formatted += '-' + part4;
-
-        return formatted;
-    };
-
-    const handleCpfChange = (e) => {
-        const formatted = formatCpf(e.target.value);
-        setFormData({ ...formData, cpf: formatted });
-    };
+    const [modal, setModal] = useState({ show: false, type: "info", message: "" });
+    // const navigate = useNavigate();
+    const isFormIncomplete = Object.entries(formData).filter(([key]) => key !== "phone" && key !== "email").some(([, value]) => !value.trim());
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -77,7 +28,14 @@ export default function RegisterUser() {
             return;
         }
 
-        if (formData.phone.replace(/\D/g, '').length !== 11 && formData.phone.replace(/\D/g, '').length > 0) {
+        if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+            setErrors({ email: "Email inválido." });
+            setLoading(false);
+            return;
+        }
+
+        const telefoneLimpo = formData.phone.replace(/\D/g, '').trim();
+        if (telefoneLimpo.length > 0 && telefoneLimpo.length !== 11) {
             setErrors({ phone: "O telefone deve ter 11 dígitos (DDD + número)." });
             setLoading(false);
             return;
@@ -89,18 +47,30 @@ export default function RegisterUser() {
             return;
         }
 
-        const cleanFormData = {
+        if (formData.password.length < 8) {
+            setErrors({ password: "A senha deve ter no mínimo 8 caracteres." });
+            setLoading(false);
+            return;
+        }
+
+        const regexSenha = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!regexSenha.test(formData.password)) {
+            setErrors({ password: "A senha deve conter pelo menos 1 letra maiúscula, 1 número e 1 caractere especial." });
+            setLoading(false);
+            return;
+        }
+
+        const payload = {
             ...formData,
-            cpf: cleanCpf(formData.cpf), 
-            phone: cleanPhone(formData.phone), 
+            phone: telefoneLimpo,
+            cpf: formData.cpf.replace(/\D/g, '').trim(),
+            email: formData.email.trim()
         };
 
         try {
-            const response = await registerUser(cleanFormData);
-
-            if (response.status === 201) {
-                navigate("/");
-            }
+            return console.log(payload);
+            // const response = await registerUser(payload);
+            // if (response.status === 201) navigate("/");
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
                 setErrors(error.response.data.errors);
@@ -118,97 +88,63 @@ export default function RegisterUser() {
                 <Styled.LeftPanel/>
                 <Styled.RightPanel>
                     <Styled.Title>Registre-se!</Styled.Title>
-                    <form className="w-100" style={{ maxWidth: "320px" }} onSubmit={handleSubmit}>
-                        <Styled.CustomFloating as={FloatingLabel} controlId="name" label="Nome" className="mb-3">
-                            <Form.Control
-                                type="text"
-                                placeholder="Nome"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                            />
-                            {errors.name && <Styled.ErrorMsg>{errors.name}</Styled.ErrorMsg>}
-                        </Styled.CustomFloating>
+                    <form onSubmit={handleSubmit}>
+                        <CustomInput
+                            label="Nome"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                        />
 
-                        <Styled.CustomFloating as={FloatingLabel} controlId="email" label="Email" className="mb-3">
-                            <Form.Control
-                                type="email"
-                                placeholder="E-mail"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                            />
-                            {errors.email && <Styled.ErrorMsg>{errors.email}</Styled.ErrorMsg>}
-                        </Styled.CustomFloating>
+                        <CustomInput
+                            label="Email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
+                        {errors.email && <Styled.ErrorMsg>{errors.email}</Styled.ErrorMsg>}
 
-                        <Styled.CustomFloating as={FloatingLabel} controlId="phone" label="Telefone" className="mb-3">
-                            <Form.Control
-                                type="tel"
-                                placeholder="Telefone"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handlePhoneChange}
-                                disabled
-                            />
-                            {errors.phone && <Styled.ErrorMsg>{errors.phone}</Styled.ErrorMsg>}
-                        </Styled.CustomFloating>
+                        <PhoneInput
+                            label="Telefone"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                        {errors.phone && <Styled.ErrorMsg>{errors.phone}</Styled.ErrorMsg>}
 
-                        <Styled.CustomFloating as={FloatingLabel} controlId="cpf" label="CPF" className="mb-3">
-                            <Form.Control
-                                type="text"
-                                placeholder="CPF"
-                                name="cpf"
-                                value={formData.cpf}
-                                onChange={handleCpfChange}
-                                required
-                            />
-                            {errors.cpf && <Styled.ErrorMsg>{errors.cpf}</Styled.ErrorMsg>}
-                        </Styled.CustomFloating>
+                       <CpfInput
+                            label="Cpf"
+                            name="cpf"
+                            value={formData.cpf}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.cpf && <Styled.ErrorMsg>{errors.cpf}</Styled.ErrorMsg>}
 
-                        <Styled.InputWrapper className="mb-3">
-                            <Styled.CustomFloating as={FloatingLabel} controlId="password" label="Senha" className="mb-3">
-                                <Form.Control
-                                    type={mostrarSenha ? "text" : "password"}
-                                    placeholder="Senha"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                    pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
-                                    title="A senha deve ter no mínimo 8 caracteres, incluindo letra, número e caractere especial."
-                                />
-                                {errors.password && <Styled.ErrorMsg>{errors.password}</Styled.ErrorMsg>}
-                            </Styled.CustomFloating>
-                            <Styled.ToggleSenha
-                                type="button"
-                                onClick={() => setMostrarSenha((prev) => !prev)}
-                            >
-                                {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
-                            </Styled.ToggleSenha>
-                        </Styled.InputWrapper>
+                        <PasswordInput
+                            label="Senha"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.password && <Styled.ErrorMsg>{errors.password}</Styled.ErrorMsg>}
 
-                        <Styled.Button type="submit" disabled={loading || isFormIncomplete}>
-                            {loading ? <><FaSpinner className="spin me-2" /> Criando...</> : "Criar Conta"}
-                        </Styled.Button>
+                        <CustomButton type="submit" loading={loading} disabled={isFormIncomplete}>
+                            Cadastrar
+                        </CustomButton>
+
+                        <CustomLink href="/">Já tenho uma conta!</CustomLink>
 
                         {errors.general && (<Styled.ErrorMsg className="text-center mt-2">{errors.general}</Styled.ErrorMsg>)}
-
-                        <div className="text-center mt-3">
-                            <Styled.Link href="/">Já tenho uma conta</Styled.Link>
-                        </div>
                     </form>
-                    {/* Modal de erro */}
-                    <Styled.CustomModal show={showModal} onHide={() => setShowModal(false)} centered>
-                        <Styled.ModalContent>
-                            <h5>Erro ao fazer login</h5>
-                            <p>Verifique seu e-mail/CPF e senha e tente novamente.</p>
-                            <BsButton variant="danger" onClick={() => setShowModal(false)}>
-                                Fechar
-                            </BsButton>
-                        </Styled.ModalContent>
-                    </Styled.CustomModal>
+                <CustomModal
+                    show={modal.show}
+                    type={modal.type}
+                    message={modal.message}
+                    onHide={() => setModal({ ...modal, show: false })}
+                />
                 </Styled.RightPanel>
             </Styled.Container>
         </Styled.RegisterPage>
@@ -261,89 +197,13 @@ const Styled = {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        background-color: rgb(12, 51, 8);
+        background-color: ${({ theme }) => theme.colors.primaryDarkTwo};
         padding: 2rem 1rem;
         height: 100%;
 
         @media (min-width: 768px) {
             max-width: 600px;
             padding: 3rem 2rem;
-        }
-    `,
-
-    ToggleSenha: styled.button`
-        position: absolute;
-        top: 50%;
-        right: 12px;
-        transform: translateY(-50%);
-        background: transparent;
-        border: none;
-        color: ${({ theme }) => theme.colors.placeholder};
-        font-size: 1.2rem;
-        cursor: pointer;
-
-        &:hover {
-        color: ${({ theme }) => theme.colors.primary};
-        }
-    `,
-
-    InputWrapper: styled.div`
-        position: relative;
-    `,
-
-    CustomFloating: styled.div`
-        .form-control {
-            background-color: ${({ theme }) => theme.colors.inputBg};
-            border: 1px solid ${({ theme }) => theme.colors.inputBorder};
-            color: ${({ theme }) => theme.colors.text};
-            padding: 0.5rem 0.6rem;
-            border-radius: 4px;
-
-            &:focus {
-                border-color: ${({ theme }) => theme.colors.primary};
-                box-shadow: none;
-            }
-        }
-
-        label {
-            color: ${({ theme }) => theme.colors.placeholder};
-        }
-
-        .form-control:focus ~ label {
-            color: ${({ theme }) => theme.colors.primary};
-        }
-    `,
-
-    Button: styled.button`
-        background-color: ${({ theme }) => theme.colors.primary};
-        color: #FFF;
-        border: none;
-        padding: 0.5rem;
-        border-radius: 4px;
-        width: 100%;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-        cursor: pointer;
-
-        &:hover {
-            background-color: ${({ theme }) => theme.colors.primaryDark};
-        }
-
-        &:disabled {
-            background-color: ${({ theme }) => theme.colors.primaryDark};
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-    `,
-
-    Link: styled.a`
-        color: ${({ theme }) => theme.colors.primary};
-        font-size: 0.85rem;
-        text-decoration: none;
-
-        &:hover {
-        text-decoration: underline;
-        color: ${({ theme }) => theme.colors.primaryDark};
         }
     `,
 

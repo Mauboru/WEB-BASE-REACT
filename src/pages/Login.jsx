@@ -40,7 +40,7 @@ export default function Login() {
         <Styled.LeftPanel />
 
         {/* Lado do Form de Login */}
-        <Styled.RightPanel maxWidth="600px">
+        <Styled.RightPanel>
           <Styled.Logo src={logo} alt="logo" />
           <form onSubmit={submitDataLogin}>
             <CustomInput
@@ -56,7 +56,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <CustomLink href="/reset-password">Esqueci minha password</CustomLink>
+            <CustomLink href="/reset-password">Esqueci minha senha!</CustomLink>
             <hr className="my-4 border-light" />
             <CustomButton type="submit" loading={loading} disabled={!emailCpf || !password}>
               Login

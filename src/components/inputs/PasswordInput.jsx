@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FloatingLabel, Form } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-export default function PasswordInput({ label = "Senha", value, onChange, required = false }) {
+export default function PasswordInput({ label = "Senha", name, value, onChange, required = false }) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
@@ -13,6 +13,7 @@ export default function PasswordInput({ label = "Senha", value, onChange, requir
           type={mostrarSenha ? "text" : "password"}
           placeholder={label}
           value={value}
+          name={name}
           onChange={onChange}
           required={required}
         />
