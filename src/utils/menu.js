@@ -5,21 +5,14 @@ import { GiPlantsAndAnimals } from "react-icons/gi";
 
 const menu = [
     {
-        label: "Item 01",
-        path: "/dashboards",
+        label: "Items",
+        path: "/items",
         icon: TbLayoutDashboardFilled,
         subItems: [
-            { label: "Resultados do Monitoramento", path: "/dashboards/control", icon: GiPlantsAndAnimals },
+            { label: "SubItem 01", path: "/items/item01", icon: GiPlantsAndAnimals },
+            { label: "SubItem 02", path: "/items/item02", icon: GiPlantsAndAnimals },
         ]
     },
-    {
-        label: "Item 02",
-        path: "/orders",
-        icon: MdAlternateEmail,
-        subItems: [
-            { label: "Acessos", path: "/orders/acess", icon: FaUserPlus }
-        ]
-    }
 ];
 
 export const getMenuByRole = (role) => {

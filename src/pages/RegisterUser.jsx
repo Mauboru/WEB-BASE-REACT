@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { registerUser } from "../services/auth";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../services/auth";
 import styled from "styled-components";
 import { CustomModal, PhoneInput, CpfInput, PasswordInput, CustomInput, CustomButton, CustomLink } from "../components";
 import backgroundImg from "/fundo.png";
@@ -10,7 +10,7 @@ export default function RegisterUser() {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [modal, setModal] = useState({ show: false, type: "info", message: "" });
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const isFormIncomplete = Object.entries(formData).filter(([key]) => key !== "phone" && key !== "email").some(([, value]) => !value.trim());
 
     const handleChange = (e) => {
@@ -68,9 +68,8 @@ export default function RegisterUser() {
         };
 
         try {
-            return console.log(payload);
-            // const response = await registerUser(payload);
-            // if (response.status === 201) navigate("/");
+            const response = await registerUser(payload);
+            if (response.status === 201) navigate("/");
         } catch (error) {
             if (error.response && error.response.data && error.response.data.errors) {
                 setErrors(error.response.data.errors);
