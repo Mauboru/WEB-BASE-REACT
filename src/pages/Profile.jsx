@@ -20,7 +20,7 @@
 //     const [userId, setUserId] = useState(null);
 
 //     useEffect(() => {
-//         const storedUser = localStorage.getItem("dataUser");
+//         const storedUser = localStorage.getItem("userData");
 //         if (storedUser) {
 //             const parsedUser = JSON.parse(storedUser);
 //             setUser(parsedUser.user);
@@ -64,10 +64,10 @@
 //         try {
 //             await updateUser(data);
 
-//             const storedUser = localStorage.getItem("dataUser");
+//             const storedUser = localStorage.getItem("userData");
 //             const parsedUser = storedUser ? JSON.parse(storedUser) : {};
 //             parsedUser.user = { ...parsedUser.user, ...data };
-//             localStorage.setItem("dataUser", JSON.stringify(parsedUser));
+//             localStorage.setItem("userData", JSON.stringify(parsedUser));
 
 //             setModal({
 //                 show: true,

@@ -4,11 +4,13 @@ import Login from "../pages/Login";
 import NotFound from "../pages/errors/NotFound";
 import NotAuthorized from "../pages/errors/NotAuthorized";
 import RegisterUser from "../pages/RegisterUser";
-// import Profile from "../pages/Profile";
 import ResetPassword from "../pages/ResetPassword";
+import SubItem01 from "../pages/items/SubItem01";
+import SubItem02 from "../pages/items/SubItem02";
+import SubItem03 from "../pages/items/SubItem03";
+import SubItem04 from "../pages/items/SubItem04";
 // import NewPasswordReset from "../pages/NewPasswordReset";
-import Item01 from "../pages/items/Item01";
-import Item02 from "../pages/items/Item02";
+// import Profile from "../pages/Profile";
 import PrivateRoute from "./PrivateRoute";
 
 export default function AppRoutes() {
@@ -28,8 +30,10 @@ export default function AppRoutes() {
                 {/* Rota protegida */}
                 <Route path="/home" element={<Home />} />
                 {/* <Route path="/profile" element={<Profile />} /> */}
-                <Route path="/items/item01" element={<PrivateRoute><Item01 /></PrivateRoute>} />
-                <Route path="/items/item02" element={<PrivateRoute requiredRole="manager"><Item02 /></PrivateRoute>} />
+                <Route path="/items01/subItem01" element={<PrivateRoute><SubItem01 /></PrivateRoute>} />
+                <Route path="/items01/subItem02" element={<PrivateRoute><SubItem02 /></PrivateRoute>} />
+                <Route path="/items02/subItem03" element={<PrivateRoute requiredRole="manager"><SubItem03 /></PrivateRoute>} />
+                <Route path="/items02/subItem04" element={<PrivateRoute requiredRole="manager"><SubItem04 /></PrivateRoute>} />
             </Routes>
         </Router>
     );

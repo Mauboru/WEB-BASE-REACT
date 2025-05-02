@@ -13,8 +13,8 @@ export default function Sidebar({ isOpen, onClose }) {
   const currentPath = location.pathname;
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("dataUser"));
-    const role = user.user.role;
+    const user = JSON.parse(localStorage.getItem("userData"));
+    const role = user.role;
     const filteredMenu = getMenuByRole(role);
     setMenuItems(filteredMenu);
 

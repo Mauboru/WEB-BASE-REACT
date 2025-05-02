@@ -19,13 +19,16 @@ export default function PrivateRoute({ children, requiredRole }) {
                 const res = await validateToken(token);
 
                 if (res.data?.valid) {
-                    setUser(res.data.user);
-                    localStorage.setItem("dataUser", JSON.stringify({ user: res.data.user }));
+                    const storedUser = JSON.parse(localStorage.getItem("userData"));
+                    setUser(storedUser);
+                    // setUser(res.data.user);
+                    // localStorage.setItem("userData", JSON.stringify(res.data.user));
                 } else {
                     localStorage.clear();
                     tokenRef.current = null;
                 }
-            } catch (err) {
+            } catch (error) {
+                console.log(error);
                 localStorage.clear();
                 tokenRef.current = null;
             }

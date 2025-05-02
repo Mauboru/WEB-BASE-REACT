@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import logo from "/logomarca.png";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth";
@@ -13,13 +13,20 @@ export default function Login() {
   const [modal, setModal] = useState({ show: false, type: "info", message: "" });
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/home");  
+    }
+  }, [navigate]);
+  
   const submitDataLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const response = await login(emailCpf, password);
       localStorage.setItem("token", response.data.token);
-      localStorage.setItem("userData", JSON.stringify(response.data));
+      localStorage.setItem("userData", JSON.stringify(response.data.user));
       navigate("/home");
     } catch (error) {
       const mensagemErro = error?.response?.data?.message || "Erro ao conectar com o servidor.";

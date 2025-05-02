@@ -6,14 +6,14 @@ export default function Home() {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("dataUser");
+        const storedUser = localStorage.getItem("userData");
         if (storedUser) {
             const parsedUser = JSON.parse(storedUser);
-            setUser(parsedUser.user);
+            setUser(parsedUser);
         } else {
             const defaultUser = { name: "Visitante", role: "visitor" };
             setUser(defaultUser);
-            localStorage.setItem("dataUser", JSON.stringify({ user: defaultUser }));
+            localStorage.setItem("userData", JSON.stringify({ user: defaultUser }));
         }
     }, []);
 
