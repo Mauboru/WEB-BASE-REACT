@@ -10,7 +10,7 @@ import SubItem02 from "../pages/items/SubItem02";
 import SubItem03 from "../pages/items/SubItem03";
 import SubItem04 from "../pages/items/SubItem04";
 import NewPasswordReset from "../pages/NewPasswordReset";
-// import Profile from "../pages/Profile";
+import Profile from "../pages/Profile";
 import PrivateRoute from "./PrivateRoute";
 
 export default function AppRoutes() {
@@ -29,7 +29,7 @@ export default function AppRoutes() {
 
                 {/* Rota protegida */}
                 <Route path="/home" element={<Home />} />
-                {/* <Route path="/profile" element={<Profile />} /> */}
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/items01/subItem01" element={<PrivateRoute><SubItem01 /></PrivateRoute>} />
                 <Route path="/items01/subItem02" element={<PrivateRoute><SubItem02 /></PrivateRoute>} />
                 <Route path="/items02/subItem03" element={<PrivateRoute requiredRole="manager"><SubItem03 /></PrivateRoute>} />
