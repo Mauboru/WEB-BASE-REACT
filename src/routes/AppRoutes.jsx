@@ -9,7 +9,7 @@ import SubItem01 from "../pages/items/SubItem01";
 import SubItem02 from "../pages/items/SubItem02";
 import SubItem03 from "../pages/items/SubItem03";
 import SubItem04 from "../pages/items/SubItem04";
-// import NewPasswordReset from "../pages/NewPasswordReset";
+import NewPasswordReset from "../pages/NewPasswordReset";
 // import Profile from "../pages/Profile";
 import PrivateRoute from "./PrivateRoute";
 
@@ -21,7 +21,7 @@ export default function AppRoutes() {
                 <Route path="/" element={<Login />} />
                 <Route path="/register" element={<RegisterUser />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                {/* <Route path="/reset-password/:token" element={<NewPasswordReset />} /> */}
+                <Route path="/reset-password/:token" element={<NewPasswordReset />} />
 
                 {/* Rota de erro */}
                 <Route path="/not-authorized" element={<NotAuthorized />} />
